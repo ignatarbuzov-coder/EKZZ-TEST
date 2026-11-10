@@ -1,6 +1,6 @@
 /* Офлайн-работа: все файлы программы (включая модели распознавания) сохраняются на устройстве. */
-const CACHE = 'tp-v4';
-const FILES = ["./","css/app.css","data/base.js","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon.svg","index.html","js/app.js","js/importers.js","js/ocr.js","js/search.js","js/store.js","lib/jszip.min.js","lib/tessdata/eng.traineddata.gz","lib/tessdata/rus.traineddata.gz","lib/tesseract/tesseract-core-lstm.wasm.js","lib/tesseract/tesseract-core-simd-lstm.wasm.js","lib/tesseract/tesseract.min.js","lib/tesseract/worker.min.js","lib/xlsx.full.min.js","manifest.webmanifest"];
+const CACHE = 'tp-v6';
+const FILES = ["./","css/app.css","data/base.js","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon.svg","index.html","js/app.js","js/importers.js","js/library.js","js/voice.js","js/ocr.js","js/search.js","js/store.js","lib/jszip.min.js","lib/pdf/pdf.min.js","lib/pdf/pdf.worker.min.js","lib/tessdata/eng.traineddata.gz","lib/tessdata/rus.traineddata.gz","lib/tesseract/tesseract-core-lstm.wasm.js","lib/tesseract/tesseract-core-simd-lstm.wasm.js","lib/tesseract/tesseract.min.js","lib/tesseract/worker.min.js","lib/xlsx.full.min.js","manifest.webmanifest"];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 const isHtml = r => r && r.ok && (r.headers.get('content-type') || '').includes('text/html');

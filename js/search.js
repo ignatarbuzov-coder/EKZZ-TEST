@@ -17,6 +17,7 @@
   function stem(w) { return w.length >= 5 ? w.slice(0, Math.max(4, w.length - 2)) : w; }
   function key5(w) { return w.slice(0, 5); }
 
+  function make() {
   const S = { items: [], idx: [], df: new Map(), N: 1 };
 
   S.build = function (items) {
@@ -49,7 +50,7 @@
     let toks = words(q);
     const typingLast = !/\s$/.test(raw || '');
     toks = toks.filter((t, i) => !(STOP.has(t) && toks.length > 1));
-    if (!toks.length && !codeF) return { list: [], tokens: [] };
+    if (!toks.length && !codeF && !opts.code && !opts.comp) return { list: [], tokens: [] };
     const pats = toks.map((t, i) => (i === toks.length - 1 && typingLast) ? t : stem(t));
     const wts = pats.map(p => idf(key5(p)) || 1);
     const total = wts.reduce((a, b) => a + b, 0) || 1;
@@ -58,6 +59,7 @@
       const it = S.items[i], ix = S.idx[i];
       if (opts.cat && it.cat !== opts.cat) continue;
       if (opts.code && it.code !== opts.code) continue;
+      if (opts.comp && (it.comp || '-') !== opts.comp) continue;
       if (codeF && ix.code !== codeF) continue;
       let sq = 0, sa = 0, hit = 0;
       for (let j = 0; j < pats.length; j++) {
@@ -90,6 +92,7 @@
     for (let i = 0; i < S.items.length; i++) {
       const it = S.items[i], ix = S.idx[i];
       if (opts.cat && it.cat !== opts.cat) continue;
+      if (opts.comp && (it.comp || '-') !== opts.comp) continue;
       if (!ix.qk.size) continue;
       let have = 0, all = 0;
       ix.qk.forEach(k => { const w = idf(k); all += w; if (tk.has(k)) have += w; });
@@ -105,6 +108,11 @@
     return { list: res.slice(0, 30).map(r => S.items[r.i]), tokens: [...tk], scores: res.slice(0, 30).map(r => r.s) };
   };
 
+  S.idf = idf;
+  return S;
+  }
+  const S = make();
+  S.make = make;
   S.dupKey = function (q, a) { return words(q).join(' ') + '||' + words(a).join(' '); };
   S.qKey = function (q) { return words(q).join(' '); };
 
@@ -120,6 +128,6 @@
       return ps.some(p => w.startsWith(p)) ? '<mark>' + esc(part) + '</mark>' : esc(part);
     }).join('');
   };
-  S.words = words;
+  S.words = words; S.key5 = key5; S.stem = stem; S.STOP = STOP;
   window.Search = S;
 })();

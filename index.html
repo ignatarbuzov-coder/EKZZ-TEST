@@ -51,16 +51,28 @@
           <button class="icon-btn ghost" id="btnClear" title="Очистить (Esc)" aria-label="Очистить">
             <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
           </button>
+          <button class="icon-btn ghost mic" id="btnMic" data-for="q" title="Диктовать голосом" aria-label="Голосовой ввод">
+            <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg>
+          </button>
           <button class="icon-btn ghost" id="btnCam" title="Распознать вопрос камерой или из снимка" aria-label="Камера">
             <svg viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
           </button>
           <button class="icon-btn ghost pc-only" id="btnScreen" title="Распознать вопрос с экрана" aria-label="С экрана">
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
           </button>
+          <button class="ext-btn" id="btnExt" title="Внешний запрос: искать также в дополнительных базах и библиотеке документов" aria-pressed="false">
+            <svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5zM20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/></svg><span>Внешний запрос</span>
+          </button>
         </div>
         <ul class="suggest" id="suggest" role="listbox" hidden></ul>
         <div class="compact-answer" id="compactAnswer"></div>
       </section>
+
+      <nav class="tabs" id="tabs">
+        <button data-tab="search" class="on">Поиск</button>
+        <button data-tab="matrix">Матрица компетенций</button>
+        <button data-tab="lib">Библиотека</button>
+      </nav>
 
       <div class="filters" id="filters">
         <div class="seg" role="tablist" id="catSeg">
@@ -70,10 +82,13 @@
           <button data-cat="О">Общие</button>
         </div>
         <select id="codeSel" aria-label="Идентификатор"><option value="">Все идентификаторы</option></select>
+        <select id="compSel" aria-label="Компетенция"><option value="">Все компетенции</option></select>
       </div>
 
       <div class="status" id="status"></div>
       <section class="results" id="results" aria-live="polite"></section>
+      <section class="pane" id="matrixView"></section>
+      <section class="pane" id="libView"></section>
     </main>
 
     <aside class="side" id="side">
@@ -84,6 +99,7 @@
       </div>
       <div class="side-block">
         <div class="side-label">База</div>
+        <button class="side-btn" id="btnDups"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/></svg>Проверить дубли в базе</button>
         <button class="side-btn" id="btnNew"><svg viewBox="0 0 24 24"><path d="M5 19h4l10-10-4-4L5 15z"/></svg>Добавить вручную</button>
         <button class="side-btn" id="btnExportX"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Выгрузить в Excel</button>
         <button class="side-btn pc-only" id="btnPublish"><svg viewBox="0 0 24 24"><path d="M4 7h6l2 2h8v10H4z"/><path d="M12 17v-5M9.5 14.5 12 12l2.5 2.5"/></svg>Обновить общую базу в папке</button>
@@ -131,6 +147,10 @@
 <input type="file" id="fileImg" accept="image/*" hidden>
 <input type="file" id="fileImport" accept=".xlsx,.xls,.xlsm,.csv,.docx,.txt,.json" multiple hidden>
 <input type="file" id="fileRestore" accept=".json" hidden>
+<input type="file" id="fileMatrix" accept=".xlsx,.xls,.csv,.docx,.txt,.png,.jpg,.jpeg" hidden>
+<input type="file" id="fileDocs" accept=".pdf,.docx,.pptx,.txt,.md,.htm,.html,.xlsx,.xls,.csv,.rtf" multiple hidden>
+<input type="file" id="fileKb" accept=".xlsx,.xls,.xlsm,.csv,.docx,.json,.js" multiple hidden>
+<input type="file" id="fileDir" webkitdirectory multiple hidden>
 
 <script src="data/base.js"></script>
 <script src="lib/xlsx.full.min.js" defer></script>
@@ -140,6 +160,8 @@
 <script src="js/search.js" defer></script>
 <script src="js/importers.js" defer></script>
 <script src="js/ocr.js" defer></script>
+<script src="js/library.js" defer></script>
+<script src="js/voice.js" defer></script>
 <script src="js/app.js" defer></script>
 </body>
 </html>
