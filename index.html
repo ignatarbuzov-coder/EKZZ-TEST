@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f8f8f8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Тесты ЕКЭ">
+<meta name="format-detection" content="telephone=no">
+<title>Подготовка к тестированию</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div id="app">
+  <!-- Заголовок окна (на компьютере — область перетаскивания) -->
+  <header class="titlebar" id="titlebar">
+    <div class="tb-left">
+      <span class="tb-kicker">ЕКЭ ИТР</span>
+      <span class="tb-title">Подготовка к тестированию</span>
+    </div>
+    <div class="tb-right nodrag">
+      <span class="tb-count" id="dbCount" title="Вопросов в базе">—</span>
+      <button class="icon-btn mob-only" id="btnMenu" title="Меню" aria-label="Меню">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </button>
+      <button class="icon-btn" id="btnCompact" title="Компактный режим: только поиск и ответ (Ctrl+M)" aria-label="Компактный режим">
+        <svg viewBox="0 0 24 24"><path d="M4 9h16M4 15h10" /></svg>
+      </button>
+      <button class="icon-btn desk-only" id="btnTray" title="Свернуть в трей (Esc)" aria-label="Свернуть в трей">
+        <svg viewBox="0 0 24 24"><path d="M5 18h14" /></svg>
+      </button>
+      <button class="icon-btn desk-only danger" id="btnQuit" title="Выйти из программы" aria-label="Выход">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" /></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main class="main">
+      <!-- Поиск -->
+      <section class="search-card">
+        <div class="search-row">
+          <svg class="search-ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          <input id="q" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="Начните вводить вопрос или ключевые слова…" aria-label="Поиск по базе">
+          <button class="icon-btn ghost" id="btnClear" title="Очистить (Esc)" aria-label="Очистить">
+            <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
+          </button>
+          <button class="icon-btn ghost" id="btnCam" title="Распознать вопрос камерой или из снимка" aria-label="Камера">
+            <svg viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </button>
+          <button class="icon-btn ghost pc-only" id="btnScreen" title="Распознать вопрос с экрана" aria-label="С экрана">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+          </button>
+        </div>
+        <ul class="suggest" id="suggest" role="listbox" hidden></ul>
+        <div class="compact-answer" id="compactAnswer"></div>
+      </section>
+
+      <div class="filters" id="filters">
+        <div class="seg" role="tablist" id="catSeg">
+          <button data-cat="" class="on">Все</button>
+          <button data-cat="Ф">Функциональные</button>
+          <button data-cat="Т">Технические</button>
+          <button data-cat="О">Общие</button>
+        </div>
+        <select id="codeSel" aria-label="Идентификатор"><option value="">Все идентификаторы</option></select>
+      </div>
+
+      <div class="status" id="status"></div>
+      <section class="results" id="results" aria-live="polite"></section>
+    </main>
+
+    <aside class="side" id="side">
+      <div class="side-block">
+        <button class="side-btn primary" id="btnAdd">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Пополнить базу
+        </button>
+      </div>
+      <div class="side-block">
+        <div class="side-label">База</div>
+        <button class="side-btn" id="btnNew"><svg viewBox="0 0 24 24"><path d="M5 19h4l10-10-4-4L5 15z"/></svg>Добавить вручную</button>
+        <button class="side-btn" id="btnExportX"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Выгрузить в Excel</button>
+        <button class="side-btn pc-only" id="btnPublish"><svg viewBox="0 0 24 24"><path d="M4 7h6l2 2h8v10H4z"/><path d="M12 17v-5M9.5 14.5 12 12l2.5 2.5"/></svg>Обновить общую базу в папке</button>
+        <button class="side-btn" id="btnBackup"><svg viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z M9 4v5h6"/></svg>Резервная копия</button>
+        <button class="side-btn" id="btnRestore"><svg viewBox="0 0 24 24"><path d="M12 20V9M7 14l5-5 5 5M5 4h14"/></svg>Восстановить из копии</button>
+      </div>
+      <div class="side-block">
+        <div class="side-label">Окно</div>
+        <label class="side-row desk-only">Прозрачность
+          <input type="range" id="opacity" min="30" max="100" value="100">
+        </label>
+        <div class="presets pc-only" id="presets">
+          <button data-p="max" title="Во весь экран">Экран</button>
+          <button data-p="center" title="По центру">Центр</button>
+          <button data-p="tl" title="Левый верхний угол">↖</button>
+          <button data-p="tr" title="Правый верхний угол">↗</button>
+          <button data-p="bl" title="Левый нижний угол">↙</button>
+          <button data-p="br" title="Правый нижний угол">↘</button>
+        </div>
+        <label class="side-row desk-only switch"><input type="checkbox" id="onTop"><span></span>Поверх всех окон</label>
+        <label class="side-row switch"><input type="checkbox" id="showOpts"><span></span>Показывать неверные варианты</label>
+        <label class="side-row">Размер шрифта
+          <input type="range" id="fontSize" min="12" max="20" value="14">
+        </label>
+        <p class="side-hint web-only pc-only">Прозрачность и трей — только в варианте с exe. В браузере положение и размер окна меняются, если программа открыта через «Запустить.cmd».</p>
+      </div>
+      <div class="side-foot">
+        <div class="side-label">Горячие клавиши</div>
+        <div class="keys"><kbd>↑</kbd><kbd>↓</kbd> выбор · <kbd>Enter</kbd> ответ · <kbd>Esc</kbd> очистить<br><span class="desk-only"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Q</kbd> показать/скрыть</span></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Модальные окна -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head"><h2 id="modalTitle"></h2><button class="icon-btn ghost" data-close aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg></button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<input type="file" id="fileCam" accept="image/*" capture="environment" hidden>
+<input type="file" id="fileImg" accept="image/*" hidden>
+<input type="file" id="fileImport" accept=".xlsx,.xls,.xlsm,.csv,.docx,.txt,.json" multiple hidden>
+<input type="file" id="fileRestore" accept=".json" hidden>
+
+<script src="data/base.js"></script>
+<script src="lib/xlsx.full.min.js" defer></script>
+<script src="lib/jszip.min.js" defer></script>
+<script src="lib/tesseract/tesseract.min.js" defer></script>
+<script src="js/store.js" defer></script>
+<script src="js/search.js" defer></script>
+<script src="js/importers.js" defer></script>
+<script src="js/ocr.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
